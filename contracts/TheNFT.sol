@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 
+pragma solidity ^0.8.4;
+
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol"; // ERC721 storage contract from openzepplin
 import "@openzeppelin/contracts/utils/Counters.sol"; // Provides the utility from opensepplin for incrementation like id incrementation
@@ -15,7 +17,7 @@ contract NFT is ERC721URIStorage { // inheritance from parent class
         contractAddress = MarketPlaceAddress; // set the contract address to the value of marketplace address
     }
 
-    function createToken(string memory tokenUri) return (uint256){
+    function createToken(string memory tokenUri) return uint256{
         _tokenIds.increment(); // Each time the function is called increment the token id 
         uint256 newTokenId = _tokensIds.current(); // This keeps track of the current token Id, or stores the token Id value
        // We mint the token passing the caller of the function address (msg.sender) and id of the token to mint
