@@ -73,7 +73,7 @@ contract NFTMarket is ReentrancyGuard{
             false
         );
 
-        // A statement that transfer the ownership of the NFT to the buyer
+        // A statement that transfer the ownership of the NFT from contract to the buyer
         IERC721(nftContractAddress).transferFrom(msg.sender,address(this),tokenId);
 
         // emit the event
@@ -175,7 +175,7 @@ contract NFTMarket is ReentrancyGuard{
         }
 
          // We store the UserCreated NFt to an array and return it when queried
-         UserNFT[] memory usernft = new UserNFT[](_UserCreatedNftCount)
+         UserNFT[] memory usernft = new UserNFT[](_UserCreatedNftCount);
         for(uint i = 0;i<_TotalItemCount;i++){
             if(Id_To_MarketItem[i+1].seller == msg.sender){
                 // get the _itemId
