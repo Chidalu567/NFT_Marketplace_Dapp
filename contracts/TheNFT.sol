@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.6.12;
+pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol"; // ERC721 storage contract from openzepplin
@@ -17,13 +17,13 @@ contract NFT is ERC721URIStorage { // inheritance from parent class
         contractAddress = MarketPlaceAddress; // set the contract address to the value of marketplace address
     }
 
-    function createToken(string memory tokenUri) return uint256{
-        _tokenIds.increment(); // Each time the function is called increment the token id 
-        uint256 newTokenId = _tokensIds.current(); // This keeps track of the current token Id, or stores the token Id value
+    function createToken(string memory tokenUri) public payable returns (uint){
+        _tokenIds.increment(); // Each time the function is called increment the token id
+        uint256 newTokenId = _tokenIds.current(); // This keeps track of the current token Id, or stores the token Id value
        // We mint the token passing the caller of the function address (msg.sender) and id of the token to mint
         _mint(msg.sender,newTokenId); // We mint the token
        //  We set the Token uri of the token
-        _setTokenURI(newTokenId,tokenURI); // set token uri
+        _setTokenURI(newTokenId,tokenUri); // set token uri
         // Set approval for the contract address which is the marketplace address
         setApprovalForAll(contractAddress,true); // set Approval for all, this gives the marketplace right to change ownership
         return newTokenId; // return the newTokenId or the current Id

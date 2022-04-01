@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.6.12;
+pragma solidity ^0.8.4;
 
 // openzeppelin imports
-import "@openzeppelin/contracts/token/ERC721/ERC721";  // still the ERC721 standard
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";  // still the ERC721 standard
 import "@openzeppelin/contracts/utils/Counters.sol"; // Provides the utility from opensepplin for incrementation like id incrementation
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
@@ -14,7 +14,7 @@ contract NFTMarket is ReentrancyGuard{
     // address of the person deploying or interacting with the market
     address payable owner; // address of the owner
     // price a person pays for listing on the market
-    uint256 listingPrice = 0.25 ether;
+    uint256 listingPrice = 0.025 ether;
     // set the owner of the contract
     constructor(){
         owner = payable(msg.sender); // set the owner to the creator of the contract or caller of the contrat
@@ -39,8 +39,8 @@ contract NFTMarket is ReentrancyGuard{
         uint256 price,
         uint256 indexed itemId,
         uint256 indexed tokenId,
-        address payable ownerAddress,
-        address payable sellerAddress,
+        address  ownerAddress,
+        address  sellerAddress,
         address indexed nftContractAddress,
         bool sold
     );
@@ -63,7 +63,7 @@ contract NFTMarket is ReentrancyGuard{
         // Once the function is called we increment the tokenId so that we can mapp the marketItem created
         _itemId.increment();
         uint256 C_item_id = _itemId.current();
-        Id_To_MarketItem(C_item_id) = MarketItem(
+        Id_To_MarketItem[C_item_id] = MarketItem(
             price,
             C_item_id,
             tokenId,
@@ -98,13 +98,14 @@ contract NFTMarket is ReentrancyGuard{
 
         // Make sure the  buyer pays the actual money to purchase the nft
         require(msg.value == Price_of_NFT,"Amount must be equal to the amount of the NFT to purchase");
-        Id_To_MarketItem[itemId].seller.transfer(msg.value); // transfer the price the seller
+
+        Id_To_MarketItem[itemId].sellerAddress.transfer(msg.value);
 
         // transfer ownership from contract to the buyer
         IERC721(nftContractAddress).transferFrom(address(this),msg.sender,tokenId);
 
         // set the owner of the nft to the buyer
-        Id_To_MarketItem[itemId].owner = payable(msg.sender);
+        Id_To_MarketItem[itemId].ownerAddress = payable(msg.sender);
 
         // set the sold nft boll to true after marketsales
         Id_To_MarketItem[itemId].sold = true;
@@ -122,10 +123,10 @@ contract NFTMarket is ReentrancyGuard{
         uint256 countIndex = 0;
         MarketItem[] memory unsoldItems = new MarketItem[](unsoldItemsCount);
         for(uint256 i = 0;i<_TotalItemCount;i++){
-            if(Id_To_MarketItem[i+1].owner == address(0)){
+            if(Id_To_MarketItem[i+1].ownerAddress == address(0)){
                 uint256 unSoldItemId = Id_To_MarketItem[i+1].itemId;
-                MarketItem[] storage item = Id_To_MarketItem[unSoldItemId];
-                items[countIndex] = item;
+                MarketItem storage item = Id_To_MarketItem[unSoldItemId];
+                unsoldItems[countIndex] = item;
                 countIndex += 1;
             }
         }
@@ -133,27 +134,27 @@ contract NFTMarket is ReentrancyGuard{
     }
 
     // Function that fetches NFT I created
-    function getMyNft() public view returns(MyNFT[] memory){
+    function getMyNft() public view returns(MarketItem[] memory){
         // gives the current value of total marketitem counts or created
-        uint8 _TotalItemCount = _itemId.current();
+        uint256 _TotalItemCount = _itemId.current();
         uint256 MyCreatedNftCount = 0;
         uint256 countIndex = 0;
 
         // Loop to find the created MarketItems that have ownership
         for(uint i = 0;i<_TotalItemCount; i++){
-            if(Id_To_MarketItem[i+1].owner == msg.sender){
+            if(Id_To_MarketItem[i+1].ownerAddress == msg.sender){
                 MyCreatedNftCount += 1;
             }
         }
 
         // We perform an algorithm to store our created nft in an array an return to the user when queied
-        MyNFT[] memory MyNfts = new MarketItem[](MyCreatedNftCount);
+        MarketItem[] memory MyNfts = new MarketItem[](MyCreatedNftCount);
         for(uint i = 0;i<_TotalItemCount;i++){
-            if(Id_To_MarketItem[i+1].owner == msg.sender){
+            if(Id_To_MarketItem[i+1].ownerAddress == msg.sender){
                 // get the itemId of the item that we created
                 uint256 itemId = Id_To_MarketItem[i+1].itemId;
                 // add the item to the array
-                MyNFT[] storage item = Id_To_MarketItem[itemId];
+                MarketItem storage item = Id_To_MarketItem[itemId];
                 MyNfts[countIndex] = item;
                 countIndex++;
             }
@@ -162,26 +163,26 @@ contract NFTMarket is ReentrancyGuard{
     }
 
     // Function that returns an array of NFT the user has created
-    function getUserCreatedNft() public view returns(UserNFT[] memory){
+    function getUserCreatedNft() public view returns(MarketItem[] memory){
         uint256 _TotalItemCount = _itemId.current();
         uint256 _UserCreatedNftCount = 0;
         uint counter = 0;
 
         for(uint i = 0;i<_TotalItemCount;i++){
             // At this point the contract must have transferred ownership to the seller. msg.sender is same as seller address
-            if(Id_To_MarketItem[i+1].seller == msg.sender ){
+            if(Id_To_MarketItem[i+1].sellerAddress == msg.sender ){
                 _UserCreatedNftCount++;
             }
         }
 
          // We store the UserCreated NFt to an array and return it when queried
-         UserNFT[] memory usernft = new UserNFT[](_UserCreatedNftCount);
+         MarketItem[] memory usernft = new MarketItem[](_UserCreatedNftCount);
         for(uint i = 0;i<_TotalItemCount;i++){
-            if(Id_To_MarketItem[i+1].seller == msg.sender){
+            if(Id_To_MarketItem[i+1].sellerAddress == msg.sender){
                 // get the _itemId
                 uint userCreatedNftId = Id_To_MarketItem[i+1].itemId;
                 // add the Item to the array
-                UserNFT[] storage item = Id_To_MarketItem[userCreatedNftId];
+                MarketItem storage item = Id_To_MarketItem[userCreatedNftId];
                 usernft[counter] = item;
                 counter++;
             }
