@@ -112,7 +112,7 @@ export default function Home() {
           {important.nfts.map((item,id) => {
             return (
               <div className={styles.card_container} key={id}>
-                <div><img src={item.image}/></div>
+                <div><img src={item.image} layout="responsive"/></div>
                 <div>
                   <h4>Name: {item.name}</h4>
                   <h4>Description: {item.descriptons}</h4>
