@@ -50,6 +50,7 @@ contract NFTMarket is ReentrancyGuard{
         return listingPrice; // return the listing price
     }
 
+
     // Create MarketItem function.
     // This function creates the marketItem and assign the change of ownership power to the contract
     function createMarketItem (uint256 price, address nftContractAddress, uint256 tokenId) public payable nonReentrant {
