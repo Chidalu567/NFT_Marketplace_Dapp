@@ -134,7 +134,7 @@ contract NFTMarket is ReentrancyGuard{
         return unsoldItems; // Return unsoldItems
     }
 
-    // Function that fetches NFT I created
+    // Function that fetches NFT I created or purchased
     function getMyNft() public view returns(MarketItem[] memory){
         // gives the current value of total marketitem counts or created
         uint256 _TotalItemCount = _itemId.current();

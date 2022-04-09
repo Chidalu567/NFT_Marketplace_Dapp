@@ -4,7 +4,7 @@ import Link from 'next/link'
 const Layout = ({ children }) => {
     return (
         <div>
-            <h1 className={styles.main_header}>Virual<h1>MarketPlace</h1></h1>
+            <h1 className={styles.main_header}>VirualMarketPlace</h1>
             <nav>
                 <ul className={styles.navbarlist}>
                     <li>
@@ -16,11 +16,15 @@ const Layout = ({ children }) => {
                     </li>
 
                     <li>
-                        <Link href='/my-assets' passHref><a>My Digital Asset</a></Link>
+                        <Link href='/my_nft' passHref><a>My Digital Asset</a></Link>
                     </li>
 
                     <li>
-                        <Link href='/create-asset' passHref><a>Create Digital Asset</a></Link>
+                        <Link href='/userCreateNft' passHref><a>Create Digital Asset</a></Link>
+                    </li>
+
+                    <li>
+                        <Link href='/dashboard' passHref><a>Dashboard</a></Link>
                     </li>
                 </ul>
             </nav>

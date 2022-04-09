@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import axios from "axios";
 import web3Modal from "web3Modal";
+import styles from '../styles/Home.module.css'
 
 // The addresses of the deployed contract files
 import { nftAddress, nftmarketAddress } from "../.config";
@@ -13,11 +14,8 @@ import NftContractJson from "../artifacts/contracts/TheNFT.sol/NFT.json";
 
 export default function Home() {
   // States to store loading and fetched-nfts
-  const [important, setImportant] = useState({
-    nfts: [],
-    loaded: "not-loaded",
-  });
-
+  const [store, setStore] = useState([]);
+  const [loading, setLoading] = useState(true);
   // call the fetchNFTs function at the first rendering of the page
   useEffect(() => {
     fetchNfts();
@@ -27,6 +25,7 @@ export default function Home() {
   const fetchNfts = async () => {
     // provider is a connection to the ethereum network
     const provider = new ethers.providers.JsonRpcProvider();
+    console.log(provider.getCode(nftmarketAddress))
     // connect to the ethereumnode to create an instance of the nftContract
     const nftContract = new ethers.Contract(
       nftAddress,
@@ -49,6 +48,7 @@ export default function Home() {
         const tokenUri = await nftContract.tokenURI(item.tokenId);
         // fetch the meta data of the token using the tokenURI
         const meta = await axios.get(tokenUri);
+        console.log("Meta from userCreateNFT:",meta)
         // convert  from bignumber to a smaller number
         const price = ethers.utils.formatUnits(item.price.toString(), "ether");
         let appropriateItem = {
@@ -58,20 +58,25 @@ export default function Home() {
           owner: item.ownerAddress,
           image: meta.data.image,
           name: meta.data.name,
-          descriptons: meta.data.descripton,
+          description: meta.data.description,
         };
 
         return appropriateItem;
       })
     );
-    setImportant({ nfts: items, loaded: "loaded" });
+    console.log(items)
+    if (items != null) {
+      setStore(items);
+      setLoading(false);
+    }
+
   };
 
   const buyNFT = async (nft) => {
     // create a web3Modal that allows user to connect to their wallets
-    const web3Modal = new web3Modal();
-    const web3Modal_instance = await web3Modal.connect();
-    const provider = new ethers.providers.web3Modal(web3Modal_instance);
+    const web3modal = new web3Modal();
+    const web3Modal_instance = await web3modal.connect();
+    const provider = new ethers.providers.Web3Provider(web3Modal_instance);
     const signer = await provider.getSigner();
 
     // connect to the nftMarketcontract
@@ -97,7 +102,7 @@ export default function Home() {
   };
 
   // CHECK IF THE nftS ARRAY IS NOT EMPTY
-  if (important.loaded == "loaded" && important.nfts.length == 0) {
+  if (loading &&store.length == 0) {
     return (
       <div>
         <h1>No Items in the MarketPlace. Create an Item</h1>
@@ -109,13 +114,13 @@ export default function Home() {
     <div>
       <section className="NFT_body">
         <div>
-          {important.nfts.map((item,id) => {
+          {store && store.map((item,id) => {
             return (
               <div className={styles.card_container} key={id}>
-                <div><img src={item.image} layout="responsive"/></div>
+                <div><img src={item.image} layout="responsive" width={270} height={270}/></div>
                 <div>
                   <h4>Name: {item.name}</h4>
-                  <h4>Description: {item.descriptons}</h4>
+                  <h4>Description: {item.description}</h4>
                   <h4>Price: {item.price}</h4>
                 </div>
                 <div>
