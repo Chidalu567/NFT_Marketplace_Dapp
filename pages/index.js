@@ -75,7 +75,7 @@ export default function Home() {
   const buyNFT = async (nft) => {
     // create a web3Modal that allows user to connect to their wallets
     const web3modal_instance = new web3Modal();
-    const connected = await web3modal.connect();
+    const connected = await web3modal_instance.connect();
     const provider = new ethers.providers.Web3Provider(connected);
     const signer = provider.getSigner();
 
