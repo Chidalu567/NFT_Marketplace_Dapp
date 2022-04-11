@@ -24,7 +24,7 @@ export default function Home() {
   // function that loads the nfts
   const fetchNfts = async () => {
     // provider is a connection to the ethereum network
-    const provider = new ethers.providers.JsonRpcProvider();
+    const provider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/5e18967771f740fcaf20100d39b8f0ec");
     console.log(provider.getCode(nftmarketAddress))
     // connect to the ethereumnode to create an instance of the nftContract
     const nftContract = new ethers.Contract(

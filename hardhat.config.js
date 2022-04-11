@@ -21,5 +21,9 @@ module.exports = {
       url: `https://polygon-mumbai.infura.io/v3/${process.env.projectId}`,
       accounts: [`${process.env.DrDavid_P_A}`],
     },
+    rinkeby: {
+      url: `https://rinkeby.infura.io/v3/${process.env.projectId}`,
+      accounts:[`${process.env.marketplace}`]
+    },
   },
 };
