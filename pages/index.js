@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import axios from "axios";
-import web3Modal from "web3Modal";
+import web3Modal from "web3modal";
 import styles from '../styles/Home.module.css'
 
 // The addresses of the deployed contract files

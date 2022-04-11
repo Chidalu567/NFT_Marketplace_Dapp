@@ -1,4 +1,4 @@
-import web3Modal from 'web3Modal';
+import web3Modal from 'web3modal';
 import { nftAddress, nftmarketAddress } from '../.config.js';
 import NFT from '../artifacts/contracts/TheNFT.sol/NFT.json';
 import NFTMarket from '../artifacts/contracts/NFTMarketPlace.sol/NFTMarket.json'

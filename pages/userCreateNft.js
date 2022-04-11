@@ -10,7 +10,7 @@ import { nftmarketAddress,nftAddress } from '../.config';
 import {create as ipfsHttpClient} from 'ipfs-http-client'
 import { useState } from 'react';
 // All clientSide integration interaction with Smartcontract
-import web3Modal from 'web3Modal'
+import web3Modal from 'web3modal'
 import { ethers } from 'ethers';
 
 
