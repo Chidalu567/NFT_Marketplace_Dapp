@@ -3,8 +3,9 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import axios from "axios";
-import web3Modal from "web3modal";
-import styles from '../styles/Home.module.css'
+// import web3Modal from "web3modal";
+import WalletConnectProvider from '@walletconnect/web3-provider';
+import styles from '../styles/Home.module.css';
 
 // The addresses of the deployed contract files
 import { nftAddress, nftmarketAddress } from "../.config";
@@ -74,9 +75,10 @@ export default function Home() {
 
   const buyNFT = async (nft) => {
     // create a web3Modal that allows user to connect to their wallets
-    const web3modal_instance = new web3Modal();
-    const connected = await web3modal_instance.connect();
-    const provider = new ethers.providers.Web3Provider(connected);
+    // const web3modal_instance = new web3Modal();
+    // const connected = await web3modal_instance.connect();
+    const wallet_instance = new WalletConnectProvider({infuraId:`${process.env.projectId}`})
+    const provider = new ethers.providers.Web3Provider(wallet_instance);
     const signer = provider.getSigner();
 
     // connect to the nftMarketcontract

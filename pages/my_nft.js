@@ -1,4 +1,5 @@
-import web3Modal from 'web3modal';
+// import web3Modal from 'web3modal';
+import WalletConnectProvider from '@walletconnect/web3-provider'
 import { nftAddress, nftmarketAddress } from '../.config.js';
 import NFT from '../artifacts/contracts/TheNFT.sol/NFT.json';
 import NFTMarket from '../artifacts/contracts/NFTMarketPlace.sol/NFTMarket.json'
@@ -17,9 +18,11 @@ const UserNft = () => {
 
     async function fetchMyNft() {
         // connect user to their wallet and get the signer from the provider
-        const wallet_instance = new web3Modal();
-        const connected = await wallet_instance.connect(0);
-        const provider = new ethers.providers.Web3Provider(connected);
+        // const wallet_instance = new web3Modal();
+        // const connected = await wallet_instance.connect();
+        const wallet_instance = new WalletConnectProvider({ infuraId:`${process.env.projectId }` });
+        await wallet_instance.enable();// enable the qrcode modal
+        const provider = new ethers.providers.Web3Provider(wallet_instance);
         const signer = provider.getSigner();
 
         // create an instance of your contracts
